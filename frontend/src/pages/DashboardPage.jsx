@@ -1,0 +1,94 @@
+const StudentDashboard = () => {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-200 px-8 py-14">
+
+      {/* HEADER */}
+      <div className="max-w-7xl mx-auto mb-14">
+        <h1 className="text-4xl font-extrabold text-white mb-2 tracking-wide">
+          Student Dashboard
+        </h1>
+        <p className="text-slate-400 max-w-2xl">
+          Stay updated with your schedule, attendance, transport, and campus
+          activities — all in one place.
+        </p>
+      </div>
+
+      {/* DASHBOARD GRID */}
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+        <Card
+          icon="📅"
+          title="My Schedule"
+          desc="View your class timetable and exam dates."
+          color="from-sky-500 to-blue-600"
+        />
+
+        <Card
+          icon="✅"
+          title="Attendance"
+          desc="View proxy-free attendance records."
+          color="from-emerald-500 to-teal-600"
+        />
+
+        <Card
+          icon="🚌"
+          title="Bus Routes"
+          desc="Track campus bus routes and timings."
+          color="from-lime-500 to-green-600"
+        />
+
+        <Card
+          icon="📚"
+          title="Resource Booking"
+          desc="Reserve library books, labs, and study rooms."
+          color="from-purple-500 to-indigo-600"
+        />
+
+        <Card
+          icon="💬"
+          title="Collaboration"
+          desc="Join discussions, groups, and projects."
+          color="from-amber-500 to-orange-600"
+        />
+
+        <Card
+          icon="📰"
+          title="Campus Live Feed"
+          desc="See updates from clubs and students."
+          color="from-cyan-500 to-sky-600"
+        />
+      </div>
+    </div>
+  );
+};
+
+/* ---------- CARD COMPONENT ---------- */
+const Card = ({ icon, title, desc, color }) => (
+  <div className="group relative bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl p-7 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+
+    {/* ICON BADGE */}
+    <div
+      className={`w-12 h-12 rounded-xl flex items-center justify-center text-xl bg-gradient-to-br ${color} mb-5 shadow-md`}
+    >
+      {icon}
+    </div>
+
+    <h2 className="text-xl font-semibold text-white mb-2">
+      {title}
+    </h2>
+
+    <p className="text-slate-300 text-sm leading-relaxed">
+      {desc}
+    </p>
+
+    {/* HOVER GLOW */}
+    <div
+      className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition pointer-events-none"
+      style={{
+        boxShadow: "0 0 40px rgba(94,234,212,0.08)",
+      }}
+    />
+  </div>
+);
+
+export default StudentDashboard;
