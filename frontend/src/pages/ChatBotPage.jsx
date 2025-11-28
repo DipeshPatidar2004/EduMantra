@@ -7,18 +7,18 @@ const client = new OpenAI({
 });
 
 export default function ChatBotPage() {
-  const [messages, setMessages] = useState<{ sender: string; text: string }[]>([]);
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const askAI = async (question: string) => {
+  const askAI = async (question) => {
     setMessages((prev) => [...prev, { sender: "user", text: question }]);
     setLoading(true);
     setInput("");
 
     try {
       const response = await client.responses.create({
-        model: "gpt-4o-mini",   // ✅ Browser-safe model
+        model: "gpt-4o-mini", // ✅ Browser-safe model
         input: question,
       });
 
@@ -31,7 +31,10 @@ export default function ChatBotPage() {
       console.error(e);
       setMessages((prev) => [
         ...prev,
-        { sender: "ai", text: "❌ Failed to connect to AI. (Browser-safe fix needed)" },
+        {
+          sender: "ai",
+          text: "❌ Failed to connect to AI. (Browser-safe fix needed)",
+        },
       ]);
     }
 
@@ -46,10 +49,17 @@ export default function ChatBotPage() {
 
       <div className="max-w-3xl mx-auto bg-slate-800/50 p-6 rounded-xl shadow-lg h-[60vh] overflow-y-auto">
         {messages.map((m, i) => (
-          <div key={i} className={`mb-4 ${m.sender === "user" ? "text-right" : "text-left"}`}>
+          <div
+            key={i}
+            className={`mb-4 ${
+              m.sender === "user" ? "text-right" : "text-left"
+            }`}
+          >
             <span
               className={`inline-block px-4 py-2 rounded-xl ${
-                m.sender === "user" ? "bg-teal-400 text-black" : "bg-slate-700 text-white"
+                m.sender === "user"
+                  ? "bg-teal-400 text-black"
+                  : "bg-slate-700 text-white"
               }`}
             >
               {m.text}
@@ -57,7 +67,11 @@ export default function ChatBotPage() {
           </div>
         ))}
 
-        {loading && <p className="text-sm text-teal-300 animate-pulse">AI is typing…</p>}
+        {loading && (
+          <p className="text-sm text-teal-300 animate-pulse">
+            AI is typing…
+          </p>
+        )}
       </div>
 
       <div className="max-w-3xl mx-auto mt-4 flex gap-3">
@@ -69,7 +83,7 @@ export default function ChatBotPage() {
           onKeyDown={(e) => e.key === "Enter" && input.trim() && askAI(input)}
         />
         <button
-          onClick={() => askAI(input)}
+          onClick={() => input.trim() && askAI(input)}
           className="px-6 py-2 bg-teal-400 text-black rounded-lg font-semibold"
         >
           Send
