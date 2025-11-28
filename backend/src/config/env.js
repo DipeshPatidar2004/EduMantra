@@ -3,16 +3,22 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const env = {
-  PORT: process.env.PORT || 4000,
+  PORT: parseInt(process.env.PORT, 10) || 4000,
+
+  JWT_SECRET: process.env.JWT_SECRET || "changeme",
+  JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || "7d",
+
   CORS_ORIGIN: process.env.CORS_ORIGIN || "*",
 
+  // 👇 YAHAN SAB IMPORTANT CHEEZEIN ADD KARO
   MONGO_URI: process.env.MONGO_URI,
-  MONGO_DB_NAME: process.env.MONGO_DB_NAME,
+  MONGO_DB_NAME: process.env.MONGO_DB_NAME || "edumantra",
 
   EMAIL_HOST: process.env.EMAIL_HOST,
   EMAIL_PORT: process.env.EMAIL_PORT,
   EMAIL_USER: process.env.EMAIL_USER,
   EMAIL_PASS: process.env.EMAIL_PASS,
 
-  BACKEND_URL: process.env.BACKEND_URL || "http://localhost:4000",
+  SEND_SMS: process.env.SEND_SMS === "true",
+  OTP_EXPIRY_MIN: parseInt(process.env.OTP_EXPIRY_MIN, 10) || 10,
 };

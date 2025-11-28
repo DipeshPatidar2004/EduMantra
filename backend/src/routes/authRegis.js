@@ -1,9 +1,11 @@
+// src/routes/authRegis.js
 import express from "express";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
-import User from "../db/User.js";        
-import { env } from "../config/env.js";
+import User from "../db/User.js";   // 👈 yaha fix
+import dotenv from "dotenv";
 
+dotenv.config();
 
 const router = express.Router();
 const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:4000";
@@ -19,23 +21,14 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// allowed roles
 const ALLOWED_USER_TYPES = ["student", "faculty", "admin"];
 
-/**
- * REGISTER USER
- * body example:
- * {
- *   name, email, password, userType: "student",
- *   student: { className, rollNo, stream, batchYear }
- * }
- */
+// ---------- REGISTER ----------
 router.post("/register", async (req, res) => {
   try {
     const payload = req.body;
     const { email, phone, userType } = payload;
 
-    // 1) basic checks
     if (!email && !phone) {
       return res.status(400).json({
         success: false,
@@ -43,7 +36,6 @@ router.post("/register", async (req, res) => {
       });
     }
 
-    // 2) role check
     if (!userType || !ALLOWED_USER_TYPES.includes(userType)) {
       return res.status(400).json({
         success: false,
@@ -51,7 +43,6 @@ router.post("/register", async (req, res) => {
       });
     }
 
-    // (optional) role-wise required fields
     if (userType === "student" && !payload.student) {
       return res
         .status(400)
@@ -68,7 +59,6 @@ router.post("/register", async (req, res) => {
         .json({ success: false, error: "Admin data required" });
     }
 
-    // 3) email unique check
     if (email) {
       const existing = await User.findOne({ email });
       if (existing) {
@@ -79,19 +69,16 @@ router.post("/register", async (req, res) => {
       }
     }
 
-    // 4) create user (isVerified = false by default from schema)
     const user = new User(payload);
 
-    // 5) generate verify token
     const token = crypto.randomBytes(32).toString("hex");
     user.verifyToken = token;
-    user.verifyTokenExpires = Date.now() + 1000 * 60 * 60 * 24; // 24 hours
+    user.verifyTokenExpires = Date.now() + 1000 * 60 * 60 * 24;
 
     await user.save();
 
     const verifyLink = `${BACKEND_URL}/api/auth/verify-email?token=${token}&userId=${user._id}`;
 
-    // 6) send email
     if (user.email) {
       await transporter.sendMail({
         from: `"My App" <${process.env.EMAIL_USER}>`,
@@ -109,7 +96,7 @@ router.post("/register", async (req, res) => {
     return res.json({
       success: true,
       message: "User registered. Verification link sent to email.",
-      verifyLink, // optional: remove in production if you don't want to expose
+      verifyLink,
       user,
     });
   } catch (err) {
@@ -121,7 +108,7 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// VERIFY EMAIL (clicked from link)
+// ---------- VERIFY EMAIL ----------
 router.get("/verify-email", async (req, res) => {
   try {
     const { token, userId } = req.query;
@@ -136,7 +123,7 @@ router.get("/verify-email", async (req, res) => {
     const user = await User.findOne({
       _id: userId,
       verifyToken: token,
-      verifyTokenExpires: { $gt: Date.now() }, // not expired
+      verifyTokenExpires: { $gt: Date.now() },
     });
 
     if (!user) {
@@ -151,16 +138,7 @@ router.get("/verify-email", async (req, res) => {
     user.verifyTokenExpires = undefined;
     await user.save();
 
-    // either redirect to frontend OR send JSON – not both
     return res.redirect("http://localhost:5173/verified-success-page");
-    // If you want JSON instead, comment redirect above and use this:
-    /*
-    return res.json({
-      success: true,
-      message: "Email verified successfully",
-      user,
-    });
-    */
   } catch (err) {
     console.error(err);
     return res.status(500).json({
@@ -170,10 +148,14 @@ router.get("/verify-email", async (req, res) => {
   }
 });
 
-// LOGIN (simple version without JWT yet)
+// LOGIN (better debug + role handling)
 router.post("/login", async (req, res) => {
   try {
-    const { email, password, userType } = req.body;
+    let { email, password, userType } = req.body;
+
+    // normalize
+    email = (email || "").trim().toLowerCase();
+    password = (password || "").trim();
 
     if (!email || !password) {
       return res
@@ -181,19 +163,41 @@ router.post("/login", async (req, res) => {
         .json({ success: false, error: "Email and password required" });
     }
 
-    const query = { email, password }; // TODO: replace with hashed password check
-    if (userType && ALLOWED_USER_TYPES.includes(userType)) {
-      query.userType = userType;
-    }
-
-    const user = await User.findOne(query);
+    // 1) sirf email se user dhundo
+    const user = await User.findOne({ email });
 
     if (!user) {
+      console.log("LOGIN: user not found for email", email);
       return res
         .status(401)
-        .json({ success: false, error: "Invalid credentials" });
+        .json({ success: false, error: "User not found with this email" });
     }
 
+    // 2) agar role bheja hai to check karo
+    if (userType && ALLOWED_USER_TYPES.includes(userType)) {
+      if (user.userType !== userType) {
+        console.log(
+          "LOGIN: role mismatch. DB:",
+          user.userType,
+          "CLIENT:",
+          userType
+        );
+        return res.status(400).json({
+          success: false,
+          error: `You are registered as '${user.userType}', not '${userType}'`,
+        });
+      }
+    }
+
+    // 3) password check
+    if (user.password !== password) {
+      console.log("LOGIN: wrong password for", email);
+      return res
+        .status(401)
+        .json({ success: false, error: "Incorrect password" });
+    }
+
+    // 4) verify check
     if (!user.isVerified) {
       return res.status(403).json({
         success: false,
@@ -201,6 +205,7 @@ router.post("/login", async (req, res) => {
       });
     }
 
+    // 5) success
     return res.json({
       success: true,
       user,
@@ -214,7 +219,8 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// FIND USER BY EMAIL OR PHONE (for OTP login)
+
+// ---------- FIND USER ----------
 router.post("/find", async (req, res) => {
   try {
     const { identifier } = req.body;
