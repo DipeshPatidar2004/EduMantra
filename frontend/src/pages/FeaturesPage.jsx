@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 /* ---------------- FEATURES DATA ---------------- */
 const features = [
@@ -7,125 +6,119 @@ const features = [
     icon: "👤",
     title: "Role-Based Profiles",
     desc: "Different access for students, faculty, and administrators.",
-    details:
-      "Each user gets a personalized dashboard based on their role. Students see schedules and attendance, faculty manage classes and attendance, and admins control announcements and resources.",
   },
   {
     icon: "✅",
     title: "Proxy-Free Attendance",
     desc: "Secure and fraud-proof attendance system.",
-    details:
-      "Attendance is marked using QR codes, geo-fencing, or device verification to eliminate proxy attendance and ensure authenticity.",
+    path: "/student-attendance",
   },
   {
     icon: "🔔",
     title: "Real-Time Notifications",
     desc: "Instant alerts for important campus updates.",
-    details:
-      "Students and faculty receive real-time notifications for events, exam schedules, deadlines, announcements, and emergency alerts.",
+    path: "/notifications",
   },
   {
     icon: "📅",
     title: "Integrated Campus Calendar",
     desc: "All schedules in one smart calendar.",
-    details:
-      "A centralized calendar for classes, exams, assignments, and extracurricular activities with reminder alerts and syncing support.",
+    path: "/calendar",
   },
   {
-    icon: "🚌",
-    title: "Smart Bus Route Tracking",
-    desc: "Know your campus bus routes and timings.",
-    details:
-      "Students can view bus routes, pickup points, schedules, and simulated live tracking for smooth and stress-free commuting.",
+    icon: "🤖",
+    title: "AI Campus Chatbot",
+    desc: "Instant answers to campus-related queries.",
+    path: "/chatbot",
   },
   {
     icon: "📚",
     title: "Resource Booking System",
     desc: "Reserve campus resources easily.",
-    details:
-      "Book library books, laboratories, seminar halls, or study rooms based on real-time availability to optimize campus resources.",
+    path: "/resource-booking",
   },
   {
     icon: "💬",
     title: "Campus Collaboration",
-    desc: "Connect beyond classrooms.",
-    details:
-      "Students and faculty can engage through discussion forums, group chats, project groups, and hackathon team formation.",
+    desc: "Forums, group chats, and hackathon collaboration.",
+    path: "/campus-collaboration",
   },
   {
     icon: "📰",
     title: "Campus Live Feed",
     desc: "Stay updated with campus life.",
-    details:
-      "A social-style live feed where student clubs, departments, and individuals post announcements, achievements, and event highlights.",
+    path: "/live-feed",
   },
   {
     icon: "🏆",
     title: "Gamified Engagement",
-    desc: "Motivation through rewards.",
-    details:
-      "Earn badges and points for attendance, participation, collaboration, and event involvement to encourage engagement.",
+    desc: "Earn rewards for participation and attendance.",
+    path: "/gamification",
   },
 ];
 
-/* ---------------- COMPONENT ---------------- */
-const FeaturesPage = () => {
-  const [openIndex, setOpenIndex] = useState(null);
-
-  const toggle = (index) => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
+export default function FeaturesPage() {
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-200 pt-20 px-6">
-      {/* Header */}
-      <h1 className="text-center text-4xl font-bold text-slate-50 mb-6">
+      {/* HEADER */}
+      <h1 className="text-center text-4xl font-bold text-slate-50 mb-12">
         Campus Connect – Features
       </h1>
 
-      <p className="text-center text-slate-400 max-w-3xl mx-auto mb-12">
-        Campus Connect brings students, faculty, and administrators together on
-        one platform by breaking information silos and improving communication,
-        accessibility, and productivity.
-      </p>
-
-      {/* Features Grid */}
+      {/* FEATURE GRID */}
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {features.map((f, i) => (
           <div
             key={i}
-            onClick={() => toggle(i)}
-            className="bg-white/10 border border-white/10 rounded-xl p-8 shadow-lg cursor-pointer hover:bg-white/20 transition-all"
+            onClick={() => f.path && navigate(f.path)}
+            className={`
+              bg-white/10 border border-white/10 rounded-xl p-8 shadow-md 
+              transition-all duration-300 
+              hover:bg-white/5 hover:scale-[1.04] hover:shadow-xl
+              ${f.path ? "cursor-pointer hover:border-teal-400/50" : ""}
+            `}
           >
             <div className="text-6xl mb-4">{f.icon}</div>
-            <h2 className="text-xl font-semibold text-slate-50 mb-2">
+            <h2 className="text-xl font-semibold text-white mb-2">
               {f.title}
             </h2>
-            <p className="text-slate-300">{f.desc}</p>
+            <p className="text-slate-300 text-sm">{f.desc}</p>
 
-            {/* Expandable Section */}
-            {openIndex === i && (
-              <div className="mt-4 p-4 bg-slate-800/60 border border-white/10 rounded-lg">
-                <p className="text-slate-200 text-sm leading-relaxed">
-                  {f.details}
-                </p>
-              </div>
+            {/* small hint */}
+            {f.path && (
+              <p className="mt-3 text-xs text-teal-300">
+                Click to open →
+              </p>
             )}
           </div>
         ))}
       </div>
 
-      {/* Back Button */}
-      <div className="text-center mt-16">
-        <Link
-          to="/"
-          className="px-6 py-2 bg-teal-400 text-slate-900 rounded-full font-semibold hover:bg-teal-300 transition"
-        >
-          ← Back to Home
-        </Link>
-      </div>
+      {/* BACK BUTTON */}
+     <div className="max-w-7xl mx-auto flex justify-center mt-16 pb-24">
+  <Link
+    to="/"
+    className="
+      inline-flex items-center gap-2
+      px-7 py-3
+      rounded-full
+      bg-slate-900/80
+      border border-teal-400/40
+      text-teal-300 font-medium
+      backdrop-blur-md
+      shadow-lg
+      hover:bg-teal-400 hover:text-slate-900
+      hover:scale-105
+      transition-all duration-300
+    "
+  >
+    ← Back to Home
+  </Link>
+</div>
+
+
     </div>
   );
-};
-
-export default FeaturesPage;
+}

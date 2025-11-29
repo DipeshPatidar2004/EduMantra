@@ -1,4 +1,3 @@
-// src/pages/RegisterPage.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -119,7 +118,6 @@ export default function RegisterPage() {
         >
           <option value="student">Student</option>
           <option value="faculty">Faculty</option>
-          <option value="admin">Admin</option>
         </select>
 
         <button

@@ -1,47 +1,65 @@
+// src/pages/LoginPage.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const API_BASE = "http://localhost:4000/api/auth";
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
 export default function LoginPage() {
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("student"); // default
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault();
     setError("");
     setLoading(true);
 
     try {
-      const res = await fetch(`${API_BASE}/login`, {
+      const res = await fetch(`${API_BASE}/api/auth/login`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, userType: role }), // backend format
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email.trim().toLowerCase(),
+          password: password.trim(),
+        }),
       });
 
-      const data = await res.json();
-      console.log("LOGIN RESPONSE =>", data);
+      const data = await res.json().catch(() => ({}));
+      console.log("LOGIN RESPONSE =>", res.status, data);
 
-      if (!data.success) {
-        throw new Error(data.error || "Login failed");
+      if (res.status === 403) {
+        setError(data.error || "Please verify your email before logging in.");
+        return;
       }
 
-      // Save session
+      if (!res.ok || !data.success) {
+        setError(data.error || "Login failed");
+        return;
+      }
+
+      const role = data.user.userType;
+
+      // auth state save karo
       localStorage.setItem("isLoggedIn", "true");
-      localStorage.setItem("role", data.user.userType);
-      localStorage.setItem("userId", data.user._id);
+      localStorage.setItem("role", role);
+      localStorage.setItem("userName", data.user.name || "");
 
-      // Redirect by role
-      if (data.user.userType === "student") navigate("/dashboard");
-      else if (data.user.userType === "faculty") navigate("/faculty-dashboard");
-      else navigate("/admin-dashboard");
+      // navbar ko update batane ke liye custom event
+      window.dispatchEvent(new Event("auth-changed"));
 
+      // role ke hisab se redirect
+      if (role === "student") navigate("/dashboard");
+      else if (role === "faculty") navigate("/faculty-dashboard");
+      else if (role === "admin") navigate("/admin-dashboard");
+      else navigate("/");
     } catch (err) {
-      setError(err.message);
+      console.error("LOGIN ERROR =>", err);
+      setError("Server error. Try again later.");
     } finally {
       setLoading(false);
     }
@@ -49,71 +67,59 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-slate-900 flex items-center justify-center px-4">
-      <div className="max-w-md w-full bg-white/10 border border-white/20 rounded-2xl p-8 shadow-xl backdrop-blur-lg">
-
+      <form
+        onSubmit={handleLogin}
+        className="max-w-md w-full bg-white/10 border border-white/20 rounded-2xl p-8 shadow-xl backdrop-blur-lg"
+      >
         <h1 className="text-3xl font-bold text-center text-white mb-2">
           Campus Connect Login
         </h1>
-        <p className="text-center text-slate-400 mb-7">
-          Login using registered credentials
+
+        <p className="text-center text-slate-400 mb-6">
+          Login using verified account
         </p>
 
         {error && (
-          <p className="mb-3 text-sm text-red-400 bg-red-950/40 px-3 py-2 rounded-lg">
-            {error}
-          </p>
+          <p className="text-red-400 text-center mb-4">{error}</p>
         )}
 
-        {/* EMAIL */}
         <input
           type="email"
-          placeholder="Email"
+          placeholder="University Email"
+          required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full mb-4 px-4 py-3 rounded-lg bg-slate-800 text-white border border-white/10 focus:border-teal-400"
+          className="w-full mb-4 px-4 py-3 rounded-lg bg-slate-800 text-white outline-none border border-white/10 focus:border-teal-400"
         />
 
-        {/* PASSWORD */}
         <input
           type="password"
           placeholder="Password"
+          required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full mb-4 px-4 py-3 rounded-lg bg-slate-800 text-white border border-white/10 focus:border-teal-400"
+          className="w-full mb-6 px-4 py-3 rounded-lg bg-slate-800 text-white outline-none border border-white/10 focus:border-teal-400"
         />
 
-        {/* ROLE SELECT */}
-        <select
-          value={role}
-          onChange={(e) => setRole(e.target.value)}
-          className="w-full mb-6 px-4 py-3 rounded-lg bg-slate-800 text-white border border-white/10 focus:border-teal-400"
-        >
-          <option value="student">Student</option>
-          <option value="faculty">Faculty</option>
-          <option value="admin">Admin</option>
-        </select>
-
         <button
+          type="submit"
           disabled={loading}
-          onClick={handleLogin}
-          className="w-full py-3 rounded-xl bg-teal-400 text-slate-900 font-semibold hover:bg-teal-300 transition disabled:opacity-50"
+          className="w-full py-3 rounded-xl bg-teal-400 text-slate-900 font-semibold hover:bg-teal-300 transition disabled:opacity-60"
         >
           {loading ? "Logging in..." : "Login"}
         </button>
 
         <div className="text-center mt-6 text-slate-400">
-          <button onClick={() => navigate("/register")} className="text-teal-300 hover:underline">
-            Create Account
+          Don’t have an account?{" "}
+          <button
+            type="button"
+            onClick={() => navigate("/register")}
+            className="text-teal-300 hover:underline"
+          >
+            Register
           </button>
         </div>
-
-        <div className="text-center mt-3">
-          <button onClick={() => navigate("/")} className="text-gray-300 hover:text-teal-400 transition">
-            ← Back to Home
-          </button>
-        </div>
-
-      </div>
+      </form>
     </div>
   );
 }

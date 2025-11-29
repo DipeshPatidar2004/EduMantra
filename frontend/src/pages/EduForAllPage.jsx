@@ -63,11 +63,6 @@ export default function EduForAllPage() {
     desc: "Secure attendance using QR code, geo-fencing, or device-based verification to eliminate proxy.",
   },
   {
-    icon: "🚌",
-    title: "Smart Bus Route Tracking",
-    desc: "View bus routes, stops, schedules, and live location updates for easy commuting.",
-  },
-  {
     icon: "📚",
     title: "Resource Booking System",
     desc: "Check availability and reserve library books, labs, or study rooms in real time.",
@@ -87,6 +82,12 @@ export default function EduForAllPage() {
     title: "Gamified Engagement",
     desc: "Earn badges and points for attendance, participation, and collaboration.",
   },
+  {
+  icon: "🤖",
+  title: "AI Campus Assistant",
+  desc: "Chatbot to answer student queries, guide navigation, explain schedules, and provide instant campus support.",
+},
+  
 ];
 
 
@@ -138,13 +139,12 @@ export default function EduForAllPage() {
       {/* ---------------- HERO ---------------- */}
       <section className="bg-gradient-to-br from-sky-500/20 to-teal-600/20 py-24 text-center">
         <h1 className="text-4xl md:text-6xl font-extrabold text-white">
-          Campus Connect
+          EduMantra
+
         </h1>
 
         <p className="text-lg md:text-xl text-slate-300 mt-4 mb-8 max-w-3xl mx-auto">
-          A unified digital platform connecting students, faculty, and
-          administrators — reducing information silos and boosting campus
-          productivity.
+          A unified digital campus platform connecting students, faculty, and administrators eliminating information gaps and improving academic efficiency.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">

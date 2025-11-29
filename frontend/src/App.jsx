@@ -10,13 +10,15 @@ import BenefitsPage from "./pages/BenefitsPage";
 import DashboardPage from "./pages/DashboardPage";
 import FacultyDashboard from "./pages/FacultyDashboard";
 import LiveFeedPage from "./pages/LiveFeedPage";
-import ResourceBookingPage from "./pages/ResourceBookingPage";
+import ResourceBookingPage from "./pages/ResourceBookingPage.jsx";
 import CampusCollaborationPage from "./pages/CampusCollaborationPage";
 import CampusCalendarPage from "./pages/CampusCalendarPage";
 import GamificationPage from "./pages/GamificationPage";
-import BusRoutesPage from "./pages/BusRoutesPage";
-import VerifyEmail from "./pages/VerifyEmail";
-
+import TeacherAttendance from "./pages/TeacherAttendance";
+import StudentAttendance from "./pages/StudentAttendance";
+import ChatbotPage from "./pages/ChatbotPage";
+import AddClassSchedule from "./pages/AddClassSchedule";
+import StudentPerformance from "./pages/StudentPerformance";
 
 
 
@@ -44,8 +46,23 @@ export default function App() {
           <Route path="/collaboration" element={<CampusCollaborationPage />} />
           <Route path="/calendar" element={<CampusCalendarPage />} />
           <Route path="/gamification" element={<GamificationPage />} />
-          <Route path="/bus-routes" element={<BusRoutesPage />} />
-        <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/teacher-attendance" element={<TeacherAttendance />} />
+          <Route
+  path="/student-attendance"
+  element={<StudentAttendance />}
+/>
+
+<Route element={<ProtectedRoute />}>
+  <Route path="/chatbot" element={<ChatbotPage />} />
+</Route>
+<Route
+  path="/faculty/add-schedule"
+  element={<AddClassSchedule />}
+/>
+<Route
+  path="/faculty/student-performance"
+  element={<StudentPerformance />}
+/>
 
 
         </Route>

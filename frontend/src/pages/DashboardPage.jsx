@@ -1,94 +1,143 @@
-const StudentDashboard = () => {
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000";
+
+/* ---------- STUDENT DASHBOARD ---------- */
+const DashboardPage = () => {
+  const navigate = useNavigate();
+  const [notifications, setNotifications] = useState([]);
+  const [loadingNotes, setLoadingNotes] = useState(false);
+  const [error, setError] = useState("");
+
+  // 🔔 Fetch notifications from backend
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        setLoadingNotes(true);
+        setError("");
+
+        const res = await fetch(`${API_BASE}/api/notifications/list`);
+        const data = await res.json();
+
+        if (!res.ok || !data.success) {
+          throw new Error(data.error || "Failed to load notifications");
+        }
+
+        setNotifications(data.notes || []);
+      } catch (err) {
+        console.error(err);
+        setError(err.message || "Failed to load notifications");
+      } finally {
+        setLoadingNotes(false);
+      }
+    };
+
+    fetchNotifications();
+  }, []);
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-200 px-8 py-14">
+    <div className="min-h-screen bg-slate-900 text-slate-200 px-8 py-14">
+      <h1 className="text-4xl font-bold text-white mb-10">
+        Student Dashboard
+      </h1>
+      {/* 🔔 REAL-TIME NOTIFICATIONS SECTION */}
+      <div className="mb-10 bg-white/5 border border-white/10 rounded-2xl p-6 shadow-lg">
+        <div className="flex items-center gap-3 mb-3">
+          <span className="text-3xl">🔔</span>
+          <div>
+            <h2 className="text-xl font-semibold text-white">
+              Real-Time Notifications
+            </h2>
+            <p className="text-slate-400 text-sm">
+              Alerts from your faculty and campus administration.
+            </p>
+          </div>
+        </div>
 
-      {/* HEADER */}
-      <div className="max-w-7xl mx-auto mb-14">
-        <h1 className="text-4xl font-extrabold text-white mb-2 tracking-wide">
-          Student Dashboard
-        </h1>
-        <p className="text-slate-400 max-w-2xl">
-          Stay updated with your schedule, attendance, transport, and campus
-          activities — all in one place.
-        </p>
+        {loadingNotes && (
+          <p className="text-slate-300 text-sm">Loading notifications...</p>
+        )}
+
+        {error && (
+          <p className="text-red-400 text-sm mb-2">
+            {error}
+          </p>
+        )}
+
+        {!loadingNotes && !error && notifications.length === 0 && (
+          <p className="text-slate-400 text-sm">
+            No notifications yet. Stay tuned!
+          </p>
+        )}
+
+        {/* Notifications list */}
+        <div className="mt-3 space-y-3 max-h-64 overflow-y-auto pr-1">
+          {notifications.map((n) => (
+            <div
+              key={n._id}
+              className="bg-slate-900/70 border border-white/10 rounded-xl px-4 py-3"
+            >
+              <div className="flex justify-between items-start gap-4">
+                <div>
+                  <h3 className="font-semibold text-teal-300 text-sm md:text-base">
+                    {n.title}
+                  </h3>
+                  <p className="text-slate-200 text-sm mt-1">
+                    {n.message}
+                  </p>
+                </div>
+                <span className="text-[10px] md:text-xs text-slate-400 whitespace-nowrap">
+                  {new Date(n.createdAt).toLocaleString()}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
-      {/* DASHBOARD GRID */}
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-
+        {/* MY SCHEDULE */}
         <Card
           icon="📅"
           title="My Schedule"
-          desc="View your class timetable and exam dates."
-          color="from-sky-500 to-blue-600"
+          desc="View class timetable and exams."
         />
 
+        {/* ✅ ATTENDANCE (CONNECTED) */}
         <Card
           icon="✅"
           title="Attendance"
-          desc="View proxy-free attendance records."
-          color="from-emerald-500 to-teal-600"
+          desc="Mark proxy-free attendance."
+          onClick={() => navigate("/student-attendance")}
         />
 
-        <Card
-          icon="🚌"
-          title="Bus Routes"
-          desc="Track campus bus routes and timings."
-          color="from-lime-500 to-green-600"
-        />
-
-        <Card
-          icon="📚"
-          title="Resource Booking"
-          desc="Reserve library books, labs, and study rooms."
-          color="from-purple-500 to-indigo-600"
-        />
-
-        <Card
-          icon="💬"
-          title="Collaboration"
-          desc="Join discussions, groups, and projects."
-          color="from-amber-500 to-orange-600"
-        />
-
+        {/* CAMPUS LIVE FEED */}
         <Card
           icon="📰"
           title="Campus Live Feed"
-          desc="See updates from clubs and students."
-          color="from-cyan-500 to-sky-600"
+          desc="See updates from clubs, faculty, and students."
+          onClick={() => navigate("/live-feed")}
         />
+
       </div>
     </div>
   );
 };
 
 /* ---------- CARD COMPONENT ---------- */
-const Card = ({ icon, title, desc, color }) => (
-  <div className="group relative bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl p-7 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
-
-    {/* ICON BADGE */}
-    <div
-      className={`w-12 h-12 rounded-xl flex items-center justify-center text-xl bg-gradient-to-br ${color} mb-5 shadow-md`}
-    >
-      {icon}
-    </div>
-
+const Card = ({ icon, title, desc, onClick }) => (
+  <div
+    onClick={onClick}
+    className={`bg-white/10 border border-white/10 rounded-2xl p-6 shadow-lg
+                transition-all cursor-pointer
+                hover:-translate-y-2 hover:shadow-2xl hover:bg-white/20`}
+  >
+    <div className="text-4xl mb-4">{icon}</div>
     <h2 className="text-xl font-semibold text-white mb-2">
       {title}
     </h2>
-
-    <p className="text-slate-300 text-sm leading-relaxed">
-      {desc}
-    </p>
-
-    {/* HOVER GLOW */}
-    <div
-      className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition pointer-events-none"
-      style={{
-        boxShadow: "0 0 40px rgba(94,234,212,0.08)",
-      }}
-    />
+    <p className="text-slate-300">{desc}</p>
   </div>
 );
 
-export default StudentDashboard;
+export default DashboardPage;

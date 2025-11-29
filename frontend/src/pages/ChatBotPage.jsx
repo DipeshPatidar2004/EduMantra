@@ -1,41 +1,48 @@
 import { useState } from "react";
-import OpenAI from "openai";
-
-const client = new OpenAI({
-  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-  dangerouslyAllowBrowser: true,
-});
 
 export default function ChatBotPage() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const askAI = async (question) => {
+    if (!question.trim()) return;
+
     setMessages((prev) => [...prev, { sender: "user", text: question }]);
-    setLoading(true);
     setInput("");
+    setLoading(true);
+    setError("");
 
     try {
-      const response = await client.responses.create({
-        model: "gpt-4o-mini", // ✅ Browser-safe model
-        input: question,
+      const res = await fetch("http://localhost:4000/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message: question }),
       });
 
-      const aiText =
-        response.output_text ||
-        "Sorry, I couldn't understand. Try again!";
+      const data = await res.json();
 
-      setMessages((prev) => [...prev, { sender: "ai", text: aiText }]);
-    } catch (e) {
-      console.error(e);
+      if (!res.ok) {
+        throw new Error(data.message || "AI failed");
+      }
+
+      setMessages((prev) => [
+        ...prev,
+        { sender: "ai", text: data.reply },
+      ]);
+    } catch (err) {
+      console.error(err);
       setMessages((prev) => [
         ...prev,
         {
           sender: "ai",
-          text: "❌ Failed to connect to AI. (Browser-safe fix needed)",
+          text: "❌ Failed to connect to AI",
         },
       ]);
+      setError("AI service not available");
     }
 
     setLoading(false);
@@ -72,6 +79,10 @@ export default function ChatBotPage() {
             AI is typing…
           </p>
         )}
+
+        {error && (
+          <p className="text-sm text-red-400 mt-3">{error}</p>
+        )}
       </div>
 
       <div className="max-w-3xl mx-auto mt-4 flex gap-3">
@@ -80,10 +91,12 @@ export default function ChatBotPage() {
           onChange={(e) => setInput(e.target.value)}
           placeholder="Ask anything…"
           className="flex-1 bg-slate-800 border border-slate-600 px-4 py-2 rounded-lg"
-          onKeyDown={(e) => e.key === "Enter" && input.trim() && askAI(input)}
+          onKeyDown={(e) =>
+            e.key === "Enter" && askAI(input)
+          }
         />
         <button
-          onClick={() => input.trim() && askAI(input)}
+          onClick={() => askAI(input)}
           className="px-6 py-2 bg-teal-400 text-black rounded-lg font-semibold"
         >
           Send
