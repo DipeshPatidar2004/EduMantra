@@ -14,6 +14,95 @@ const initialPosts = [
     likes: 12,
     comments: ["Excited!", "Count me in 🔥"],
   },
+<<<<<<< HEAD
+=======
+  {
+    author: "Prof. Anjana",
+    role: "faculty",
+    time: "3 hours ago",
+    avatar: "https://i.pravatar.cc/100?img=32",
+    title: "DBMS Test Update",
+    content:
+      "Tomorrow’s DBMS test will cover normalization and indexing. Be prepared!",
+    image: null,
+    likes: 21,
+    comments: ["Thanks for the info!", "Noted ✅"],
+  },
+  {
+    author: "AI Club",
+    role: "club",
+    time: "5 hours ago",
+    avatar: "https://i.pravatar.cc/100?img=45",
+    title: "Workshop on Generative AI 🤖",
+    content:
+      "Join us for a hands-on session on ChatGPT & AI tools this Saturday.",
+    image:
+      "https://images.unsplash.com/photo-1581090700227-1e37b190418e",
+    likes: 35,
+    comments: ["Sounds awesome!", "Registered 🎉"],
+  },
+  {
+    author: "Administration",
+    role: "admin",
+    time: "Yesterday",
+    avatar: "https://i.pravatar.cc/100?img=8",
+    title: "Campus Notice",
+    content:
+      "University will remain closed on Monday due to maintenance work.",
+    image: null,
+    likes: 50,
+    comments: ["Thanks for the update", "👍"],
+  },
+  {
+    author: "Rahul",
+    role: "student",
+    time: "Yesterday",
+    avatar: "https://i.pravatar.cc/100?img=18",
+    title: "Need Teammates for Hackathon",
+    content:
+      "Looking for 2 frontend devs and 1 ML enthusiast. Anyone interested?",
+    image: null,
+    likes: 9,
+    comments: ["DM sent!", "I’m interested"],
+  },
+  {
+    author: "Sports Committee",
+    role: "club",
+    time: "2 days ago",
+    avatar: "https://i.pravatar.cc/100?img=55",
+    title: "Inter-College Football Match ⚽",
+    content:
+      "Trials begin next week. All football enthusiasts are welcome!",
+    image:
+      "https://images.unsplash.com/photo-1508098682722-e99c43a406b2",
+    likes: 18,
+    comments: ["Let’s go!", "Finally 🔥"],
+  },
+  {
+    author: "Placement Cell",
+    role: "admin",
+    time: "2 days ago",
+    avatar: "https://i.pravatar.cc/100?img=60",
+    title: "Internship Opportunity",
+    content:
+      "Infosys internship applications are now live on the portal.",
+    image: null,
+    likes: 42,
+    comments: ["Applied ✅", "Thanks for sharing"],
+  },
+  {
+    author: "Neha",
+    role: "student",
+    time: "3 days ago",
+    avatar: "https://i.pravatar.cc/100?img=24",
+    title: "Resource Booking Tip 💡",
+    content:
+      "Library study rooms get full fast—book them a day early!",
+    image: null,
+    likes: 15,
+    comments: ["Helpful!", "Didn’t know this"],
+  },
+>>>>>>> 24ecf6f23405b91e129d5f45c2b14dc9e8620f84
 ];
 
 /* ---------------- ROLE BADGE ---------------- */
@@ -41,13 +130,21 @@ export default function LiveFeedPage() {
 
   const role = localStorage.getItem("role") || "student";
 
+<<<<<<< HEAD
   /* ---------------- IMAGE UPLOAD (MOCK) ---------------- */
+=======
+  /* IMAGE UPLOAD (MOCK) */
+>>>>>>> 24ecf6f23405b91e129d5f45c2b14dc9e8620f84
   const handleImage = (e) => {
     const file = e.target.files[0];
     if (file) setImagePreview(URL.createObjectURL(file));
   };
 
+<<<<<<< HEAD
   /* ---------------- ADD POST ---------------- */
+=======
+  /* ADD POST */
+>>>>>>> 24ecf6f23405b91e129d5f45c2b14dc9e8620f84
   const addPost = () => {
     if (!text.trim()) return;
 
@@ -71,7 +168,11 @@ export default function LiveFeedPage() {
     setImagePreview(null);
   };
 
+<<<<<<< HEAD
   /* ---------------- LIKE ---------------- */
+=======
+  /* LIKE */
+>>>>>>> 24ecf6f23405b91e129d5f45c2b14dc9e8620f84
   const handleLike = (index) => {
     setPosts(
       posts.map((p, i) =>
@@ -80,7 +181,11 @@ export default function LiveFeedPage() {
     );
   };
 
+<<<<<<< HEAD
   /* ---------------- COMMENT ---------------- */
+=======
+  /* COMMENT */
+>>>>>>> 24ecf6f23405b91e129d5f45c2b14dc9e8620f84
   const addComment = (index, comment) => {
     if (!comment.trim()) return;
 
@@ -102,9 +207,14 @@ export default function LiveFeedPage() {
       <div className="flex justify-center">
         <div className="w-full max-w-3xl">
 
+<<<<<<< HEAD
           {/* ---------------- CREATE POST ---------------- */}
           <div className="bg-white/10 backdrop-blur-xl border border-white/10 
                           rounded-2xl p-5 mb-12 shadow-xl">
+=======
+          {/* CREATE POST */}
+          <div className="bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl p-5 mb-12 shadow-xl">
+>>>>>>> 24ecf6f23405b91e129d5f45c2b14dc9e8620f84
             <div className="flex gap-3 mb-4">
               <img
                 src={`https://i.pravatar.cc/100?u=${role}`}
@@ -153,22 +263,34 @@ export default function LiveFeedPage() {
             </div>
           </div>
 
+<<<<<<< HEAD
           {/* ---------------- FEED ---------------- */}
+=======
+          {/* FEED */}
+>>>>>>> 24ecf6f23405b91e129d5f45c2b14dc9e8620f84
           <div className="space-y-10">
             {posts.map((post, i) => (
               <div
                 key={i}
+<<<<<<< HEAD
                 className="bg-white/10 backdrop-blur-xl border border-white/10 
                            rounded-3xl shadow-lg hover:shadow-2xl transition"
               >
                 {/* HEADER */}
+=======
+                className="bg-white/10 backdrop-blur-xl border border-white/10 rounded-3xl shadow-lg"
+              >
+>>>>>>> 24ecf6f23405b91e129d5f45c2b14dc9e8620f84
                 <div className="flex items-center gap-4 p-5">
                   <img
                     src={post.avatar}
                     className="w-14 h-14 rounded-full"
                     alt="avatar"
                   />
+<<<<<<< HEAD
 
+=======
+>>>>>>> 24ecf6f23405b91e129d5f45c2b14dc9e8620f84
                   <div className="flex-1">
                     <p className="font-semibold flex gap-2 items-center">
                       {post.author}
@@ -178,7 +300,10 @@ export default function LiveFeedPage() {
                   </div>
                 </div>
 
+<<<<<<< HEAD
                 {/* CONTENT */}
+=======
+>>>>>>> 24ecf6f23405b91e129d5f45c2b14dc9e8620f84
                 <div className="px-6 pb-4">
                   <h3 className="font-semibold mb-1">{post.title}</h3>
                   <p className="text-slate-300 text-sm">{post.content}</p>
@@ -194,12 +319,17 @@ export default function LiveFeedPage() {
                   </div>
                 )}
 
+<<<<<<< HEAD
                 {/* ACTIONS */}
                 <div className="flex justify-around py-3 border-t border-white/10 text-sm">
                   <button
                     onClick={() => handleLike(i)}
                     className="hover:text-teal-300"
                   >
+=======
+                <div className="flex justify-around py-3 border-t border-white/10 text-sm">
+                  <button onClick={() => handleLike(i)} className="hover:text-teal-300">
+>>>>>>> 24ecf6f23405b91e129d5f45c2b14dc9e8620f84
                     👍 Like ({post.likes})
                   </button>
 
@@ -230,10 +360,14 @@ function CommentBox({ index, comments, onAdd }) {
 
   return (
     <div>
+<<<<<<< HEAD
       <button
         onClick={() => setOpen(!open)}
         className="hover:text-teal-300"
       >
+=======
+      <button onClick={() => setOpen(!open)} className="hover:text-teal-300">
+>>>>>>> 24ecf6f23405b91e129d5f45c2b14dc9e8620f84
         💬 Comment ({comments.length})
       </button>
 
@@ -268,4 +402,8 @@ function CommentBox({ index, comments, onAdd }) {
       )}
     </div>
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 24ecf6f23405b91e129d5f45c2b14dc9e8620f84

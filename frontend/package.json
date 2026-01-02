@@ -12,6 +12,11 @@
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.17",
     "autoprefixer": "^10.4.21",
+<<<<<<< HEAD
+=======
+    "firebase": "^12.7.0",
+    "lucide-react": "^0.555.0",
+>>>>>>> 24ecf6f23405b91e129d5f45c2b14dc9e8620f84
     "openai": "^6.8.1",
     "postcss": "^8.5.6",
     "react": "^19.1.1",

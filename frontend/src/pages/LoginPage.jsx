@@ -1,8 +1,14 @@
 // src/pages/LoginPage.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+<<<<<<< HEAD
 
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000";
+=======
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { auth, db } from "../firebase";
+>>>>>>> 24ecf6f23405b91e129d5f45c2b14dc9e8620f84
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -18,6 +24,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
+<<<<<<< HEAD
       const res = await fetch(`${API_BASE}/api/auth/login`, {
         method: "POST",
         headers: {
@@ -60,6 +67,46 @@ export default function LoginPage() {
     } catch (err) {
       console.error("LOGIN ERROR =>", err);
       setError("Server error. Try again later.");
+=======
+      // 1️⃣ Firebase Auth login
+      const cred = await signInWithEmailAndPassword(
+        auth,
+        email.trim().toLowerCase(),
+        password
+      );
+
+      // 2️⃣ Get user profile from Firestore
+      const userRef = doc(db, "users", cred.user.uid);
+      const snap = await getDoc(userRef);
+
+      if (!snap.exists()) {
+        throw new Error("User profile not found");
+      }
+
+      const userData = snap.data();
+
+      // 3️⃣ Save auth state
+      localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("role", userData.role);
+      localStorage.setItem("userName", userData.name || "");
+
+      window.dispatchEvent(new Event("auth-changed"));
+
+      // 4️⃣ Redirect by role
+      if (userData.role === "student") {
+        navigate("/dashboard");
+      } else if (userData.role === "faculty") {
+        navigate("/faculty-dashboard");
+      } else if (userData.role === "admin") {
+        navigate("/admin-dashboard");
+      } else {
+        navigate("/");
+      }
+
+    } catch (err) {
+      console.error("LOGIN ERROR =>", err);
+      setError("Invalid email or password");
+>>>>>>> 24ecf6f23405b91e129d5f45c2b14dc9e8620f84
     } finally {
       setLoading(false);
     }
@@ -122,4 +169,8 @@ export default function LoginPage() {
       </form>
     </div>
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 24ecf6f23405b91e129d5f45c2b14dc9e8620f84

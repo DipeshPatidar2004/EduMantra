@@ -232,9 +232,60 @@ export default function EduForAllPage() {
       </section>
 
       {/* ---------------- FOOTER ---------------- */}
+<<<<<<< HEAD
       <footer className="bg-slate-900/90 text-slate-400 text-center py-8 border-t border-white/10">
         © 2024 Campus Connect — Shri Vaishnav Vidyapeeth Vishwavidyalaya
       </footer>
+=======
+      {/* ---------------- FOOTER ---------------- */}
+<footer className="bg-gradient-to-r from-slate-900 via-slate-950 to-slate-900 border-t border-white/10">
+  <div className="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-3 gap-8 text-slate-400">
+
+    {/* LEFT */}
+    <div>
+      <h3 className="text-xl font-bold text-teal-300 mb-2">
+        EduMantra
+      </h3>
+      <p className="text-sm leading-relaxed">
+        A unified digital campus platform empowering students, faculty, and
+        administrators through transparency, collaboration, and real-time
+        connectivity.
+      </p>
+    </div>
+
+    {/* CENTER */}
+    <div>
+      <h4 className="text-white font-semibold mb-3">References</h4>
+      <ul className="text-sm space-y-2">
+        <li>• Smart Campus Digitalization</li>
+        <li>• NEP 2020 – Education Technology</li>
+        <li>• Open Source Web Standards</li>
+        <li>• MongoDB Atlas & Cloud Architecture</li>
+      </ul>
+    </div>
+
+    {/* RIGHT */}
+    <div>
+      <h4 className="text-white font-semibold mb-3">Project Info</h4>
+      <p className="text-sm">
+        Academic Project
+        <br />
+        Shri Vaishnav Vidyapeeth Vishwavidyalaya
+      </p>
+
+      <p className="mt-3 text-sm text-teal-300 font-semibold">
+        Developed by Alpha Squad
+      </p>
+    </div>
+  </div>
+
+  {/* BOTTOM BAR */}
+  <div className="border-t border-white/10 py-4 text-center text-sm text-slate-500">
+    © {new Date().getFullYear()} EduMantra. All rights reserved.
+  </div>
+</footer>
+
+>>>>>>> 24ecf6f23405b91e129d5f45c2b14dc9e8620f84
 
       {/* ---------------- DEMO POPUP ---------------- */}
       {showDemoPopup && (

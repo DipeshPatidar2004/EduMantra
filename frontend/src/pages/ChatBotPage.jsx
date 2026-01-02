@@ -15,7 +15,11 @@ export default function ChatBotPage() {
     setError("");
 
     try {
+<<<<<<< HEAD
       const res = await fetch("http://localhost:4000/api/chat", {
+=======
+      const res = await fetch("http://localhost:4000/api/gemini", {
+>>>>>>> 24ecf6f23405b91e129d5f45c2b14dc9e8620f84
         method: "POST",
         headers: {
           "Content-Type": "application/json",

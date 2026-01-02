@@ -19,7 +19,11 @@ import StudentAttendance from "./pages/StudentAttendance";
 import ChatbotPage from "./pages/ChatbotPage";
 import AddClassSchedule from "./pages/AddClassSchedule";
 import StudentPerformance from "./pages/StudentPerformance";
+<<<<<<< HEAD
 
+=======
+import MySchedule from "./pages/MySchedule";
+>>>>>>> 24ecf6f23405b91e129d5f45c2b14dc9e8620f84
 
 
 export default function App() {
@@ -63,6 +67,10 @@ export default function App() {
   path="/faculty/student-performance"
   element={<StudentPerformance />}
 />
+<<<<<<< HEAD
+=======
+<Route path="/schedule" element={<MySchedule />} />
+>>>>>>> 24ecf6f23405b91e129d5f45c2b14dc9e8620f84
 
 
         </Route>

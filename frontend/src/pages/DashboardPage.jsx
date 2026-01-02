@@ -101,6 +101,10 @@ const DashboardPage = () => {
           icon="📅"
           title="My Schedule"
           desc="View class timetable and exams."
+<<<<<<< HEAD
+=======
+          onClick={() => navigate("/schedule")}
+>>>>>>> 24ecf6f23405b91e129d5f45c2b14dc9e8620f84
         />
 
         {/* ✅ ATTENDANCE (CONNECTED) */}
